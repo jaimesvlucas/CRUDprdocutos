@@ -34,29 +34,36 @@ public class ServletProductos extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+        String op = request.getParameter("op");
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ServletProductos</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ServletProductos at " + request.getContextPath() + "</h1>");
-            List<Productos> misProductos = ProductosCRUD.getProductos();
-            for (Productos p: misProductos){
-                out.println(p.getNombre());
+            if(op.equals("listar")){
+                List<Productos> misProductos = ProductosCRUD.getProductos();
+                request.setAttribute("productos", misProductos);
+                request.getRequestDispatcher("listar.jsp").forward(request, response);
             }
-            Productos miProducto = new Productos();
-            miProducto.setId(11);
-            miProducto.setNombre("Tarta de limon");
-            miProducto.setImagen("tarta.jpg");
-            miProducto.setCategoria("Tartas");
-            miProducto.setPrecio(12);
-            ProductosCRUD.actualizaProducto(miProducto);
-            ProductosCRUD.insertaProducto(miProducto);
-            out.println("</body>");
-            out.println("</html>");
+            if(op.equals("insert1")){
+                request.getRequestDispatcher("insert.jsp").forward(request, response);
+            }
+            if(op.equals("insert2")){
+                Productos miProducto = new Productos();
+                miProducto.setNombre(request.getParameter("nombre"));
+                miProducto.setImagen(request.getParameter("imagen"));
+                miProducto.setCategoria(request.getParameter("categoria"));
+                String precio=request.getParameter("precio");
+                miProducto.setPrecio(Float.parseFloat(precio));
+                ProductosCRUD.insertaProducto(miProducto);
+                out.println("<h1>Se ha insertado el producto</h1>");
+                out.println("<a href='index.html'>Volver a index</a>");
+            }
+            if(op.equals("borrar")){
+                if(ProductosCRUD.destroyProducto(Integer.parseInt(request.getParameter("id")))>0){
+                    out.println("<h1>Se ha borrado el producto</h1>");
+                    out.println("<a href='index.html'>Volver a index</a>");
+                }else{
+                    out.println("<h1>No se ha borrado el producto</h1>");
+                    out.println("<a href='index.html'>Volver a index</a>");
+                }
+            }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
