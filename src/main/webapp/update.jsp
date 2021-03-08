@@ -1,9 +1,10 @@
 <%-- 
-    Document   : insert
-    Created on : 5 mar. 2021, 20:34:29
+    Document   : update
+    Created on : 8 mar. 2021, 19:41:19
     Author     : User
 --%>
 
+<%@page import="Modelo.Productos"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -16,6 +17,10 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <%
+            Productos miProducto = (Productos)request.getAttribute("producto");
+            String mensaje = (String)request.getAttribute("mensaje");
+        %>
         <nav class="navbar navbar-expand-md bg-dark navbar-dark">
             <!-- Brand -->
             <a class="navbar-brand" href="index.html">Restaurante Bosco</a>
@@ -40,17 +45,25 @@
               </ul>
             </div>
           </nav>
+        <%if(mensaje!=null){%>
+        <div id="mensaje"  class="alert alert-success"><%=mensaje%></div>         
+        <%}%>
         <div class="container-fluid">
-            <h1>Insertar producto</h1>
-            <form action="ServletProductos" method="get">
-            <p><label>Nombre: <input class="form-control" type="text" name="nombre" required > </label></p>
-            <p><label>Imagen: <input class="form-control" type="text" name="imagen" required > </label></p>
-            <p><label>Categoría: <input class="form-control" type="text" name="categoria" required > </label></p>
-            <p><label>Precio: <input class="form-control" type="text" name="precio" required > </label></p>
-            <input readonly type="hidden" name="op" required value="insert2"><br>
-            <input class="btn btn-primary" type="submit" value="insertar" >
-            <a class="btn btn-primary" href="index.html">Volver</a>
+            <h1>Editar producto</h1>
+            <form action="ServletProductos" method="get" onchange="borrarMensaje()">
+            <p><label>Nombre: <input class="form-control" value="<%= miProducto.getNombre() %>" type="text" name="nombre" required > </label></p>
+            <p><label>Imagen: <input class="form-control" value="<%= miProducto.getImagen()%>" type="text" name="imagen" required > </label></p>
+            <p><label>Categoría: <input class="form-control" value="<%= miProducto.getCategoria()%>" type="text" name="categoria" required > </label></p>
+            <p><label>Precio: <input class="form-control" value="<%= miProducto.getPrecio()%>" type="text" name="precio" required > </label></p>
+            <input readonly type="hidden" name="op" required value="update2">
+            <input class="btn btn-primary" type="submit" value="actualizar" >       
         </form>
         </div>
+            <script type="text/javascript">
+                function borrarMensaje(){
+                    document.getElementById("mensaje").innerHTML="";
+                    document.getElementById("mensaje").style.display="none";
+                }
+            </script>
     </body>
 </html>
